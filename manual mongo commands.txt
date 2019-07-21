@@ -1,0 +1,8 @@
+use vacationsite
+db.users.insertOne({
+	name: "Char",
+	lastname: "Aznable",
+	username: "Red Comet",
+	password: "3timesfaster",
+	isadmin: true
+})

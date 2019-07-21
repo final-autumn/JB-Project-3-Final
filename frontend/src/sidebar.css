@@ -1,0 +1,31 @@
+.sidebar {
+    height: 100%;
+    width: 248px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    overflow-x: hidden;
+    padding-top: 4px;
+    background-color: blue;
+}
+h3 {
+    color: white;
+    text-align: center;
+}
+
+.down {
+    margin-top: 244px;
+}
+
+.arrow {
+    margin-top: 16px;
+    padding: 52px;
+    background: url('./downarrow.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.description {
+    color: black;
+    margin-left: 26px;
+}
