@@ -4,29 +4,40 @@ import Login from './login';
 import Chart from './chart';
 import Signup from './signup';
 import Vacations from './vacations';
+import queryString from 'querystring';
+import Cookies from 'universal-cookie';
 //import Sidebar from './sidebar';
 
-export const {Provider, Consumer} = React.createContext<{isAdmin: boolean,setMode(mode: String):void,setInfo(isAdmin:boolean, username:string):void}>({} as any);
+export const {Provider, Consumer} = React.createContext<{name: String, isadmin: boolean,setMode(mode: String):void,setInfo(isadmin:Boolean, name:String):void}>({} as any);
 
 interface IMainState {
-  isAdmin : boolean;
+  isadmin : boolean;
   mode: String;
-  username: String;
+  name: String;
 }
 
 //const App: React.FC = () => {
 class App extends React.Component<any, IMainState> {
   constructor(props : any) {
     super(props);
-    fetch('http://localhost:3000/users/get').then(res=>res.json()).then(res=>console.log(res)).catch(e=>console.log(e));
-  }
+    fetch('http://localhost:3000/users/logbackin', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', credentials: 'include'},
+      body: queryString.stringify({id: new Cookies().get('id')}),
+    }).then(res=>res.json()).then(res=>{
+      if (res.name) {
+        this.setInfo(res.isadmin, res.name);
+        this.setMode('vacations');
+      };
+    }).catch(e=>console.log(e));
+  };
   state = {
 	  mode: 'login',
-    isAdmin: false,
-    username: '',
+    isadmin: false,
+    name: '',
   };
   setMode = (mode: String) => this.setState({mode});
-  setInfo = (isAdmin: boolean, username: string) =>this.setState({isAdmin, username});
+  setInfo = (isadmin: boolean, name: string) =>this.setState({isadmin, name});
   chooseMode = () => {
     switch(this.state.mode) {
       case 'login':
@@ -44,8 +55,8 @@ class App extends React.Component<any, IMainState> {
   render() {
 	  return (
 		<div>
-        <Provider value={{setMode : this.setMode, isAdmin: this.state.isAdmin, setInfo: this.setInfo}}>
-          <div className='notSidebar'><input onChange={(e)=>this.setMode(e.target.value)}></input></div>
+        <Provider value={{name: this.state.name, setMode : this.setMode, isadmin: this.state.isadmin, setInfo: this.setInfo}}>
+          {/*<div className='notSidebar'><input onChange={(e)=>this.setMode(e.target.value)}></input></div>*/}
           {this.chooseMode()}
         </Provider>
 		</div>

@@ -18,16 +18,17 @@ const Vacation = mongoose.model('vacation', new mongoose.Schema({
   start: String,
   end: String,
   price: Number,
+  //_id: String,
 }));
 
 
 router.get('/', async (_, res) => {
   try {
     const vacations = await Vacation.find().exec();
-    vacations.map(vacation => vacation.following.map(follow => cookiemaker.coder(follow)));
+    //vacations.map(vacation => vacation.following.map(follow => cookiemaker.coder(follow)));
     res.send(vacations);
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send({message: e.message});
   }
 });
 router.post('/', async (req, res) => {
@@ -36,43 +37,45 @@ router.post('/', async (req, res) => {
     userid
   } = req.body;
   try {
-    const realuser = cookiemaker.decoder(userid);
+    //const realuser = cookiemaker.decoder(userid);
     const vacation = await Vacation.findOne({
       _id: id
     }).exec();
-    if (vacation.following.includes(realuser)) {
-      vacation.following = vacation.following.filter(user => user !== realuser);
+    if (vacation.following.includes(userid)) {
+      vacation.following = vacation.following.filter(user => user !== userid);
       vacation.save();
-      res.send('removed');
+      res.send({message:'removed'});
     } else {
-      vacation.following.push(realuser);
+      vacation.following.push(userid);
       vacation.save();
-      res.send('added');
+      res.send({message: 'added'});
     }
   } catch (e) {
-    res.send(400).send(e.message);
+    res.send(400).send({message: e.message});
   }
 });
 
 router.post('/new', async (req, res) => {
-  const vacation = new Vacation(req.body);
+	console.log(req.body)
   try {
+	const vacation = new Vacation(req.body);
     await vacation.save();
-    res.send('New vacation!');
+    res.send({message: 'New vacation!'});
   } catch (e) {
-    res.status(400).send('Not good');
+    res.status(400).send({message: e.message});
   }
 });
 
 router.get('/one/:id', async (req, res) => {
   try {
-    const vacation = await Vacation.findOne({
+    /*const vacation = await Vacation.findOne({
       _id: req.params.id
-    }).exec();
-    vacations.map(vacation => vacation.following.map(follow => cookiemaker.coder(follow)));
+    }).exec();*/
+	const vacation = await Vacation.findOne({_id: req.params.id}).exec();
+    //vacations.map(vacation => vacation.following.map(follow => cookiemaker.coder(follow)));
     res.send(vacation);
   } catch (e) {
-    res.status(400).send('Not a vacation');
+    res.status(400).send({message: e.message});
   }
 });
 
@@ -82,12 +85,12 @@ router.delete('/:id', async (req, res) => {
       _id: req.params.id
     }).exec();
     if (!vacation) {
-      res.status(400).send(`Doesn't exist`);
+      res.status(400).send({message: `Doesn't exist`});
     } else {
       res.send(vacation);
     };
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send({message: e.message});
   }
 });
 
@@ -120,7 +123,7 @@ router.post('/edit/:id', async (req, res) => {
       updated: keys
     });
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send({message: e.message});
   }
 });
 

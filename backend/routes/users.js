@@ -41,6 +41,7 @@ router.post('/login', async (req, res) => {
 		username,
 		password
 	} = req.body;
+	try{
 	const user = await User.findOne({
 		username,
 		password
@@ -50,6 +51,9 @@ router.post('/login', async (req, res) => {
 		id: cookiemaker.coder(user._id.toString()),
 		isadmin: user.isadmin
 	});
+	} catch(e) {
+		res.send({message: e.message});
+	};
 });
 router.post('/logbackin', async (req, res) => {
 	try {
@@ -67,7 +71,7 @@ router.post('/logbackin', async (req, res) => {
 			isadmin: user.isadmin
 		});
 	} catch (e) {
-		res.status(400).send(e.message);
+		res.status(400).send({message: e.message});
 	}
 });
 router.post('/new', async (req, res) => {
@@ -90,7 +94,7 @@ router.post('/new', async (req, res) => {
 		res.send(`You're in!`);
 
 	} catch (e) {
-		res.status(400).send(e.message);
+		res.status(400).send({message: e.message});
 	}
 });
 
