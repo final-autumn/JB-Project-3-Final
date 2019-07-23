@@ -36,7 +36,6 @@ export default class NewVacation extends React.Component<any, INew> {
 			  Start: <input type='date' value={start} onChange={e=>{this.setState({start:e.target.value})}}></input>
 			  End: <input type='date' value={end} onChange={e=>this.setState({end:e.target.value})}></input>
 			  <button onClick={()=>{
-				  console.log(this.state)
 				if (!Object.values(this.state).every(val=>!!val===true)) {
 					return
 				};

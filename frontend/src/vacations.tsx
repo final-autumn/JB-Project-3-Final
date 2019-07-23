@@ -27,6 +27,7 @@ export default class Vacations extends React.Component<any, IVacations> {
     updateIt = setInterval(()=>{
       fetch('http://localhost:3000/vacations').then(res=>res.json()).then(res=>{
         if(res.length !== this.state.vacations.length) {
+		  this.setState({vacations: []});
           this.setState({vacations: res});
         }
       }).catch(e=>console.log(e));
